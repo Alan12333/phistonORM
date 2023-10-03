@@ -35,7 +35,14 @@ class Sends
         {
             // if($this->VerifyToken())
             // {
-                return $this->GetAttributes();
+                if($_SERVER['REQUEST_METHOD'] ==='POST')
+                {
+                    return $this->GetAttributes();
+                }
+                else
+                {
+
+                }
             // }
         }
         else if($this->method === "PUT")
@@ -83,12 +90,15 @@ class Sends
         $this->attributes = [];
         $atrs = [];
         $atrs = json_decode($this->GetDBattributes());
+        $newatrb = [];
         foreach($atrs as $item => $key)
         {
             if(isset($_POST[$key]))
             {
-                $this->model->$key = $this->clean->Clean($_POST[$key]);
-                $this->CheckAttributes($key, $this->model->$key);
+                if($key!="id")
+                {
+                    array_push($newatrb, $this->CheckAttributes($key,$_POST[$key]));
+                }
             }
             
             // if(isset($_POST[$key]))
@@ -174,10 +184,10 @@ class Sends
         $this->values[] = $this->model->$atrib;
     }
 
-    private function CheckAttributes($key, $attribute)
+    private function CheckAttributes($key, $value)
     {
         $validator = new Validators($this->model);
-        $validator->Validate($key);
+        $validator->Validate($key, $value);
     }
 
 }

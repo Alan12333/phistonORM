@@ -2,10 +2,6 @@
 require_once "./Models.php";
 class test extends Model
 {
-    public $id;
-    public $nombre;
-    public $apellido;
-    public $edad;
 
     public function bcrypt()
     {

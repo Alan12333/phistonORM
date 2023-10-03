@@ -14,13 +14,28 @@ class DB
 
     private function GetVariables()
     {
-        $this->host = "";
-        $this->user = "busman";
-        $this->pass = "134679";
-        $this->database = __DIR__ . '/host.db';;
-        $this->driver = "sqlite"; // Cambiar a "sqlite" si es necesario
-        $this->port = "3306"; // Cambiar el puerto si es necesario
-        $this->charset = "utf8mb4"; // Cambiar el conjunto de caracteres si es necesario
+        $archivo = 'db.dset';
+        if (file_exists($archivo)) {
+            $contenido = file_get_contents($archivo);
+            $lineas = explode("\n", $contenido);
+            $configuracion = array();
+            foreach ($lineas as $linea) {
+                $parts = explode(':', $linea, 2);
+                if (count($parts) === 2) {
+                    $clave = trim($parts[0]);
+                    $valor = trim($parts[1]);
+                    $val = explode(";",$valor);
+                    $configuracion[$clave] = $val[0];
+                }
+            }
+            $this->driver = isset($configuracion['driver']) ? $configuracion['driver'] : "";
+            $this->host = isset($configuracion['host']) ? $configuracion['host'] : "";
+            $this->user = isset($configuracion['user']) ? $configuracion['user'] : "";
+            $this->pass = isset($configuracion['password']) ? $configuracion['password'] : "";
+            $this->database = isset($configuracion['database']) ? $configuracion['database'] : "";
+            $this->port = isset($configuracion['port']) ? $configuracion['port'] : "";
+            $this->charset = isset($configuracion['charset']) ? $configuracion['charset'] : "";
+        }
     }
 
     public static function Instance()
@@ -35,24 +50,16 @@ class DB
     {
         if ($this->driver === "mysql") {
             try {
-                $dsn = "{$this->driver}:host={$this->host};port={$this->port};dbname={$this->database};charset={$this->charset}";
+                $dsn = "mysql:host={$this->host};port={$this->port};dbname={$this->database};charset={$this->charset}";
                 $this->db = new PDO($dsn, $this->user, $this->pass);
-
+    
                 // Configurar el modo de error de PDO para generar excepciones
                 $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             } catch (PDOException $e) {
                 die('Error de conexión: ' . $e->getMessage());
             }
-        } else if ($this->driver === "sqlite") {
-            try {
-                $dsn = "sqlite :{$this->database}";
-                $this->db = new PDO($dsn);
-
-                // Configurar el modo de error de PDO para generar excepciones
-                $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            } catch (PDOException $e) {
-                die('Error de conexión: ' . $e->getMessage());
-            }
+        } else {
+            die('Driver no compatible: ' . $this->driver);
         }
     }
 

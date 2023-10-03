@@ -36,27 +36,38 @@ class Builds
     {
         $data = array();
         $db = DB::Instance();
+        $pdo = $db->Connection(); // Obtén la instancia de PDO
+
         $explode = explode(" ", $cmd);
-        if ($explode[0] === "SELECT") {
-            $stringsacpe = mysqli_real_escape_string($db->Connection(), $cmd);
-            $result = mysqli_query($db->Connection(), $stringsacpe);
-            while ($row = $result->fetch_assoc()) {
-                array_push($data, $row);
+        $queryType = strtoupper($explode[0]);
+
+        if ($queryType === "SELECT") {
+            try {
+                $stmt = $pdo->prepare($cmd);
+                $stmt->execute();
+                $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                if (count($data) > 0) {
+                    return $data;
+                } else {
+                    ProcessErrors::displayMessage("No values found", 345, __LINE__);
+                }
+            } catch (PDOException $e) {
+                die('Error in query: ' . $e->getMessage());
             }
-            if (count($data) > 0) {
-                return $data;
-            } else {
-                ProcessErrors::displayMessage("Not values found", 345, __LINE__);
+        } else {
+            try {
+                $stmt = $pdo->prepare($cmd);
+                $result = $stmt->execute();
+
+                if ($result) {
+                    return $stmt->rowCount(); // Retorna el número de filas afectadas
+                } else {
+                    return false;
+                }
+            } catch (PDOException $e) {
+                die('Error in query: ' . $e->getMessage());
             }
-        } else if ($explode[0] === "UPDATE") {
-            $result = mysqli_query($db->Connection(), $cmd);
-            return $result;
-        } else if ($explode[0] === "DELETE") {
-            $result = mysqli_query($db->Connection(), $cmd);
-            return $result;
-        } else if ($explode[0] === "INSERT") {
-            $result = mysqli_query($db->Connection(), $cmd);
-            return $result;
         }
     }
 }

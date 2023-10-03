@@ -1,0 +1,9 @@
+#Configuration of Database
+
+driver:mysql;
+host:localhost;
+user:busman;
+password:134679;
+database:test;
+port:3306;
+charset:utf8;

@@ -12,7 +12,7 @@ class Validators
         $this->model = $model;
     }
 
-    public function Validate($attributtes)
+    public function Validate($atrb, $value)
     {
         $req = false;
         $min = false;
@@ -24,16 +24,15 @@ class Validators
         if(method_exists($this->model, "validate") == true)
         {
             $array = $this->model->validate();
-            print_r($array);
-            foreach ($array as $key => $value) {
-                if($attributtes === $key)
+            foreach ($array as $key => $values) {
+                if($atrb === $key)
                 {
-                    $separate = explode("|", $value);
-                    foreach($separate as $value)
+                    $separate = explode("|", $values);
+                    foreach($separate as $values2)
                     {
-                        if($value === "required")
+                        if($values2 === "required")
                         {
-                            $req = $this->requires($key);
+                            $req = $this->requires($value);
                         }
                         else
                         {
@@ -50,28 +49,51 @@ class Validators
                             }
                         }
                     }
-                    if($min === true && $max === true && $req === true)
-                    {
-                        $value =  true;
-                    }
-                    else
-                    {
-                        $value = $this->Combinations($min,$sizemin,$max,$sizemax,$req);
-                    }
-                    $this->Encrypt($attributtes);
-                    return $this->ConstructObject($value, $attributtes, $this->model->$attributtes);
                 }
-                else
-                {
-                    $this->Encrypt($attributtes);
-                    return $this->ConstructObject(true, $attributtes, $this->model->$attributtes);
-                }
+                //     $separate = explode("|", $value);
+                //     foreach($separate as $value)
+                //     {
+                //         if($value === "required")
+                //         {
+                //             $req = $this->requires($key);
+                //         }
+                //         else
+                //         {
+                //             $separate2 = explode(":", $value); 
+                //             if($separate2[0] === "min")
+                //             {
+                //                 $sizemin = $separate2[1];
+                //                 $min = $this->min($separate2[1], $key);
+                //             }
+                //             if($separate2[0] === "max")
+                //             {
+                //                 $sizemax = $separate2[1];
+                //                 $max = $this->max($separate2[1], $key);
+                //             }
+                //         }
+                //     }
+                //     if($min === true && $max === true && $req === true)
+                //     {
+                //         $value =  true;
+                //     }
+                //     else
+                //     {
+                //         $value = $this->Combinations($min,$sizemin,$max,$sizemax,$req);
+                //     }
+                //     $this->Encrypt($attributtes);
+                //     return $this->ConstructObject($value, $attributtes, $this->model->$attributtes);
+                // }
+                // else
+                // {
+                //     $this->Encrypt($attributtes);
+                //     return $this->ConstructObject(true, $attributtes, $this->model->$attributtes);
+                // }
             }
         }
         else
         {
-            $this->Encrypt($attributtes);
-            return $this->ConstructObject(true, $attributtes, $this->model->$attributtes);
+            // $this->Encrypt($attributtes);
+            // return $this->ConstructObject(true, $attributtes, $this->model->$attributtes);
         }
     }
 
@@ -144,16 +166,15 @@ class Validators
         }
     }
 
-    private function requires($atribute)
+    private function requires($value)
     {
-        if($this->model->$atribute != "")
+        if($value === "")
         {
-            return true;
+            return false;
         }
         else
         {
-            $this->alert = ProcessErrors::displayMessage(5,345,__LINE__);;
-            return false;
+            return true;
         }
     }
 
