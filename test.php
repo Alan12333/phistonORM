@@ -6,16 +6,17 @@ class test extends Model
     public function bcrypt()
     {
         return [
-            "nombre",
-            "apellido",
+            "password",
         ];
     }
 
     public function validate()
     {
         return [
-            "nombre"=>"required|max:12",
-            "apellido" => "max:5",
+            "nombre"=>"required",
+            "apellido" => "required",
+            "edad"=>"required,Int",
+            "password"=>"required"
         ];
     }
 }

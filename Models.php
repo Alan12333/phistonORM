@@ -138,10 +138,24 @@ class Model
         return self::$result;
     }
 
-    public static function store(...$params)
+    public static function store($params="")
     {
         self::$process = new Process(get_called_class());
         self::$result = self::$process->store("POST", $params);
+        return self::$result;
+    } 
+
+    public static function update($param="", $value="")
+    {
+        self::$process = new Process(get_called_class());
+        self::$result = self::$process->put("PUT", $param, $value);
+        return self::$result;
+    } 
+
+    public static function delete($param="", $value="")
+    {
+        self::$process = new Process(get_called_class());
+        self::$result = self::$process->delete("DELETE", $param, $value);
         return self::$result;
     } 
 

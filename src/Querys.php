@@ -80,6 +80,12 @@ class Querys
         if(isset($params[1])===true)
         {
             $array = explode(";", $result);
+            
+            if($array[0] === "")
+            {
+                $variable = $this->data[0]." ".$this->data[20]." ".$this->data[1]." ".$this->class." ". $this->ObtenerAlias()."";
+                return $variable . " ".$this->data[2]." ".$params[0]." ".$params[1]." '".$params[2]."' ;";
+            }
             return $array[0]." ".$this->data[2]." ".$params[0]." ".$params[1]." '".$params[2]."' ;";
         }
         else
@@ -150,11 +156,21 @@ class Querys
         if($params === "")
         {
             $array = explode(";", $result);
+            if($array[0] === "")
+            {
+                $variable = $this->data[0]." ".$this->data[20]." ".$this->data[1]." ".$this->class." ". $this->ObtenerAlias()."";
+                return $variable ." ".$this->data[10]." id ".$this->data[11]." ;";
+            }
             return $array[0]." ".$this->data[10]." id ".$this->data[11]." ;";
         }
         else
         {
             $array = explode(";", $result);
+            if($array[0] === "")
+            {
+                $variable = $this->data[0]." ".$this->data[20]." ".$this->data[1]." ".$this->class." ". $this->ObtenerAlias()."";
+                return $variable ." ".$this->data[10]." ".$params." ".$this->data[12]." ;";
+            }
             return $array[0]." ".$this->data[10]." ".$params." ".$this->data[12]." ;";
         }
     }

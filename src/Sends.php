@@ -2,11 +2,9 @@
 
 class Sends
 {
-    protected $execute;
+    protected $builds;
 
     protected $token;
-
-    protected $method;
 
     protected $result;
 
@@ -20,71 +18,106 @@ class Sends
 
     protected $clean;
 
-    function __construct($method, $model_name, $model)
+
+    function __construct($model_name, $model)
     {
         $this->clean = new DataClean;
         $this->model = $model;
-        $this->method = $method;
         $this->model_name = $model_name;
-        $this->execute = new Builds;
+        $this->builds = new Builds;
     }
 
-    public function Verifymethod()
+    public function Verifymethod($method, $param="", $values="")
     {
-        if($this->method === "POST")
+        if($method === "POST")
         {
-            // if($this->VerifyToken())
-            // {
-                if($_SERVER['REQUEST_METHOD'] ==='POST')
+            if($_SERVER['REQUEST_METHOD'] ==='POST')
+            {
+                $exec = $this->GetAttributes($method);
+                if($exec === true)
                 {
-                    return $this->GetAttributes();
+                    return $this->builds->CreateData($this->model_name, $this->attributes, $this->values, $param);
                 }
                 else
                 {
-
+                    return $exec;
                 }
-            // }
+            }
+            else
+            {
+                return http_response_code(405);
+            }
         }
-        else if($this->method === "PUT")
+        else if($method === "PUT")
         {
-
-        }
-        else if($this->method === "DELETE")
-        {
-
-        }
-    }
-
-    private function VerifyToken()
-    {
-        if(isset($_POST['token']))
-        {
-            // if($_POST['token']=== Ses::token())
-            // {
-            //     return true;
-            // }
-            // else
-            // {
-                $token = $_POST['token'];
-                $cmd = "SELECT * FROM token WHERE _token='$token'";
-                $result = $this->execute->ExecuteData($cmd);
-                if(count($result) > 0)
+            if($_SERVER['REQUEST_METHOD'] ==='PUT' || $_SERVER['REQUEST_METHOD'] ==='POST')
+            {
+                $exec = $this->GetAttributes($method);
+                if($exec === true)
                 {
-                    return true;
+                    return $this->builds->UpdateData($this->model_name, $this->attributes, $this->values, $param, $values);
                 }
                 else
                 {
-                    http_response_code(401);
-                    return false;
+                    return $exec;
                 }
-            // }
+            }
+            else
+            {
+                return http_response_code(405);
+            }
         }
-        http_response_code(401);
-        return false;
+        else if($method === "DELETE")
+        {
+            if($_SERVER['REQUEST_METHOD'] ==='POST')
+            {
+                $exec = $this->GetAttributes("PUT");
+                if($exec === true)
+                {
+                    return $this->builds->DeleteData($this->model_name, $param, $values);
+                }
+                else
+                {
+                    return $exec;
+                }
+            }
+            else
+            {
+                return http_response_code(405);
+            }
+        }
     }
 
+    // private function VerifyToken()
+    // {
+    //     if(isset($_POST['token']))
+    //     {
+    //         // if($_POST['token']=== Ses::token())
+    //         // {
+    //         //     return true;
+    //         // }
+    //         // else
+    //         // {
+    //             $token = $_POST['token'];
+    //             $cmd = "SELECT * FROM token WHERE _token='$token'";
+    //             $result = $this->execute->ExecuteData($cmd);
+    //             if(count($result) > 0)
+    //             {
+    //                 return true;
+    //             }
+    //             else
+    //             {
+    //                 http_response_code(401);
+    //                 return false;
+    //             }
+    //         // }
+    //     }
+    //     http_response_code(401);
+    //     return false;
+    // }
 
-    private function GetAttributes()
+
+    private function GetAttributes($method)
     {
         $this->values=[];
         $this->attributes = [];
@@ -100,53 +133,49 @@ class Sends
                     array_push($newatrb, $this->CheckAttributes($key,$_POST[$key]));
                 }
             }
-            
-            // if(isset($_POST[$key]))
-            // {
-            //     if($this->model->$key == "")
-            //     {
-            //         $this->model->$key = $this->clean->Clean($_POST[$key]);
-            //         $this->CheckAtributtes($key, $this->model->$key);
-            //     }
-            //     if(isset($_POST['method']))
-            //     {
-            //         $method = $_POST['method'];
-            //         if($method === "POST" || $method === "DELETE")
-            //         {
-            //             $this->DefineValues($key);
-            //         }
-            //         else if($method === "PUT" )
-            //         {
-            //             $this->DefineValues2($key);
-            //         }
-            //     }
-            //     else{
-            //         return "Not typed of HTTP ENTER";
-            //     }
-            // }
-            // else
-            // {
-            //     if(isset($_POST['method']))
-            //     {
-            //         $method = $_POST['method'];
-            //         if($this->model->$key != "")
-            //         {
-            //             $this->CheckAtributtes($key, $this->model->$key);
-            //             if($method === "POST" || $method === "DELETE")
-            //             {
-            //                 $this->DefineValues($key);
-            //             }
-            //             else if($method === "PUT" )
-            //             {
-            //                 $this->DefineValues2($key);
-            //             }
-            //         }
-            //     }
-            //     else{
-            //         return "Not typed of HTTP ENTER";
-            //     }
-            // }
         }
+        $variable = "";
+        foreach($newatrb as $validate => $key)
+        {
+            foreach($key as $variable => $val)
+            {
+                if($val === "sucess")
+                {
+                    $variable = true;
+                }
+                else
+                {
+                    $variable = $key;
+                    return $val;
+                }
+            }
+        }
+        
+
+        foreach($atrs as $item => $key)
+        {
+            if(isset($_POST[$key]))
+            {
+                if($method === "POST")
+                {
+                    if($key !== "id")
+                    {
+                        $this->EncriptAttributes($key,$_POST[$key]);
+                        array_push($this->attributes, $key);
+                    }
+                }
+                else
+                {
+                    if($key !== "id")
+                    {
+                        $this->EncriptAttributes($key,$_POST[$key]);
+                    }
+                    array_push($this->attributes, $key);
+                }
+                array_push($this->values, $_POST[$key]);
+            }
+        }
+        return true;
     }
 
 
@@ -154,7 +183,7 @@ class Sends
     {
         $atrb = [];
         $sql = "DESCRIBE $this->model_name";
-        $result = $this->execute->ExecuteData($sql);
+        $result = $this->builds->ExecuteData($sql);
         foreach($result as $resultado => $key)
         {
             array_push($atrb, $key['Field']);
@@ -162,32 +191,17 @@ class Sends
         return json_encode($atrb);
     }
 
-    private function DefineValues2($atrib) //Esta funcion evita que los atributos y valores se dupliquen
-    {
-        if(in_array($atrib, $this->attributes)==false)
-        {
-            $this->attributes[] = $atrib;
-        }
-        
-        if(in_array($this->model->$atrib, $this->values)==false)
-        {
-            $this->values[] =[$atrib => $this->model->$atrib];
-        }
-    }
-
-    private function DefineValues($atrib) //Esta funcion es para los metodos POST Y DELETE
-    {
-        if(in_array($atrib, $this->attributes)==false)
-        {
-            $this->attributes[] = $atrib;
-        }
-        $this->values[] = $this->model->$atrib;
-    }
 
     private function CheckAttributes($key, $value)
     {
         $validator = new Validators($this->model);
-        $validator->Validate($key, $value);
+        return $validator->Validate($key, $value);
+    }
+
+    private function EncriptAttributes($key, $value)
+    {
+        $validator = new Validators($this->model);
+        $validator->Encrypt($key, $value);
     }
 
 }

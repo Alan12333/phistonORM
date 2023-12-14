@@ -13,7 +13,7 @@ require_once "src/DataClean.php";
 require_once "src/lang/selector.php";
 require_once "src/lang/lang.php";
 
-$resultado = test::store();
+$resultado = test::delete("Nombre", "Alan");
 
 header("Content-Type:application/json");
 
