@@ -75,8 +75,16 @@ class Builds
                 $conditionString = "$param = :$param";
                 $mergedData = [$param => $param_value];
             } else {
-                $conditionString = "id = :id";
-                $mergedData = ["id" => $_POST['id']];
+                if(isset($_POST['id']))
+                {
+
+                    $conditionString = "id = :id";
+                    $mergedData = ["id" => $_POST['id']];
+                }
+                else
+                {
+                    return false;
+                }
             }
 
             // Construir la consulta SQL de eliminación

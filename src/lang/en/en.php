@@ -6,10 +6,13 @@ class en{
     private function Messages($index)
     {
         $array =  [
-            "Not values found", "This function is redundant", "This function should be in the start",
-            "This function must be executed at startup", "This function must be executed at startup",
-            "This function must be executed at startup", "attribute must not be null", "Parameters must not be null",
-            "input empty","the chars is "
+            "not is type Mail",
+            "not is type Int",
+            "not is type Float",
+            "not is type Boolean",
+            "is required",
+            "field value is greater than required.",
+            "field value is less than required"
         ];
         return $array[$index];
     }

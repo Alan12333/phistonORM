@@ -6,6 +6,7 @@ include "src/Querys.php";
 include "src/Process.php";
 include "src/ProcessErrors.php";
 include "test.php";
+include "User.php";
 include "src/Sends.php";
 include "src/Builds.php";
 require_once "src/validator.php";
@@ -13,7 +14,8 @@ require_once "src/DataClean.php";
 require_once "src/lang/selector.php";
 require_once "src/lang/lang.php";
 
-$resultado = test::delete("Nombre", "Alan");
+// $resultado = test::store();
+$resultado = usuario::store();
 
 header("Content-Type:application/json");
 

@@ -6,9 +6,13 @@ class es{
     private function Messages($index)
     {
         $array =  [
-            "No se encontraron valores", "Esta función es redundante", "Esta función debe ir primero",
-            "El atributo no puede estar vació", "Los Parámetros no pueden ser nulos",
-            "Campo vació","limite de caracteres permitido excedido", "ingresa mas caracteres"
+            "no es un correo valido",
+            "no es de tipo entero",
+            "no es de tipo flotante",
+            "no es de tipo booleano",
+            "es requerido",
+            "es mayor que el requerido",
+            "es menor que el requerido"
         ];
         return $array[$index];
     }

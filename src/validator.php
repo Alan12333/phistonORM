@@ -6,10 +6,12 @@ class Validators
     protected $declaredmax = 0;
     public $alert;
     public $object;
+    protected $lang;
 
     public function __construct($model)
     {
         $this->model = $model;
+        $this->lang = new Lang("en");
     }
 
     public function Validate($atrb, $value)
@@ -153,7 +155,7 @@ class Validators
         }
         else
         {
-            return "field value is greater than required. value: ".$value;
+            return $this->lang->ReturnMessage(5);
         }
     }
 
@@ -168,7 +170,7 @@ class Validators
         }
         else
         {
-            return "field value is less than required. value: ".$value;
+            return $this->lang->ReturnMessage(6);
         }
     }
 
@@ -180,7 +182,7 @@ class Validators
         }
         else
         {
-            return "not is type Int";
+            return $this->lang->ReturnMessage(1);
         }
     }
 
@@ -192,7 +194,7 @@ class Validators
         }
         else
         {
-            return "not is type Float";
+            return $this->lang->ReturnMessage(2);
         }
     }
 
@@ -204,7 +206,7 @@ class Validators
         }
         else
         {
-            return "not is type Mail";
+            return $this->lang->ReturnMessage(0);
         }
     }
 
@@ -216,7 +218,7 @@ class Validators
         }
         else
         {
-            return "not is type Boolean";
+            return $this->lang->ReturnMessage(3);
         }
     }
 
@@ -224,7 +226,7 @@ class Validators
     {
         if($_POST[$value] === "" || $_POST[$value] === null)
         {
-            return "is required";
+            return $this->lang->ReturnMessage(4);
         }
         else
         {
