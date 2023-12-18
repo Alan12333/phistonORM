@@ -29,6 +29,8 @@ class Querys
         'ON',
         'GROUP BY',
         'LIMIT',
+        'IF',
+        'NOT',
     ];
 
     protected $class;
@@ -350,5 +352,35 @@ class Querys
         $newalias[] = $array[2];
         $alias = implode("",$newalias);
         return $alias;
+    }
+
+    public function create_tbl($name, $atributes)
+    {
+        $sql = $this->data[17]." ".$this->data[18]." ".$this->data[26]." ".$this->data[27]." EXISTS {$name} (";
+        foreach($atributes as $column => $atr)
+        {
+            $sql .="{$column} {$atr}, ";
+        }
+        $sql = trim($sql, ', ').');';
+
+        return $sql;
+    }
+
+    public function drop_tbl($sql)
+    {
+        $explode = explode("CREATE TABLE IF NOT EXISTS", $sql);
+        $explode2 = explode("(", $explode[1]);
+        $table = $explode2[0];
+        $cmd = $this->data[16]." ".$this->data[18]." ".$this->data[26]." EXISTS $table;";
+        $cmd = $cmd." ".$sql;
+        return $cmd;
+    }
+
+    public function update_tbl($sql)
+    {
+        $explode = explode("CREATE TABLE IF NOT EXISTS", $sql);
+        $explode2 = explode("(", $explode[1]);
+        $table = $explode2[0];
+        
     }
 }
