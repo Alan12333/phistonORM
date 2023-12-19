@@ -26,9 +26,19 @@ $table = Migration::CreateTable("Usuarios", [
 ]);
 
 
-Migration::StartDrop($table);
+// Migration::StartUpdate($table);
 // header("Content-Type:application/json");
+// $resultado = usuario::store();
 
 // echo json_encode($resultado);
 
 
+Migration::StartUpdate($table);
+
+
+// $usuario = usuario::get();
+
+// foreach($usuario as $user => $key)
+// {
+//     echo "<div> $key[Correo]</div>";
+// }

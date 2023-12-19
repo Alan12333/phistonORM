@@ -31,6 +31,7 @@ class Querys
         'LIMIT',
         'IF',
         'NOT',
+        'DESCRIBE'
     ];
 
     protected $class;
@@ -378,9 +379,14 @@ class Querys
 
     public function update_tbl($sql)
     {
+        
+    }
+
+    public function tbl_descr($sql)
+    {
         $explode = explode("CREATE TABLE IF NOT EXISTS", $sql);
         $explode2 = explode("(", $explode[1]);
         $table = $explode2[0];
-        
+        return $this->data[28]." ".$table;
     }
 }

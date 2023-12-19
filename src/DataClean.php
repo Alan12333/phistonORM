@@ -10,7 +10,7 @@ class DataClean
         $this->filter = new InputFilter();
     }
 
-    private function CleanString($string)
+    public function CleanString($string)
     {
         $filterstring = "";
 

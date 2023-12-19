@@ -40,4 +40,13 @@ class Migration
         return $builds->ExecuteQuery($sql);
     }
 
+    public static function StartUpdate($sql)
+    {
+        $migration = new self;
+        $result = $migration->querys->tbl_descr($sql);
+        $builds = new Builds;
+        $actual_data = $builds->ExecuteData($result);
+        
+    }
+
 }

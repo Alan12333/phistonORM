@@ -130,7 +130,7 @@ class Sends
             {
                 if($key!="id")
                 {
-                    array_push($newatrb, $this->CheckAttributes($key,$_POST[$key]));
+                    array_push($newatrb, $this->CheckAttributes($key,$this->clean->CleanString($_POST[$key])));
                 }
             }
         }
@@ -172,7 +172,7 @@ class Sends
                     }
                     array_push($this->attributes, $key);
                 }
-                array_push($this->values, $_POST[$key]);
+                array_push($this->values, $this->clean->CleanString($_POST[$key]));
             }
         }
         return true;

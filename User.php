@@ -14,7 +14,7 @@ class usuario extends Model
         return [
             "Nombre"=>"required",
             "Telefono" => "required,Int,max:10",
-            "Correo"=>"required,Mail",
+            "Correo"=>"required",
         ];
     }
 }
